@@ -45,3 +45,8 @@ export const tamanios = {
   bordeFino: 1,
   acentoTitulo: 4,
 } as const;
+
+export const opacidad = {
+  presionado: 0.75,
+  deshabilitado: 0.4,
+} as const;
