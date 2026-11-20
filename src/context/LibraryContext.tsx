@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 import { CREDENCIALES_PERSONAL, DIAS_PRESTAMO, USUARIO_ACTUAL } from '../constants/app';
 import { ESPERAS_INICIALES } from '../data/libros';
@@ -20,7 +20,7 @@ export type Aviso = {
   texto: string;
 };
 
-type ValorBiblioteca = {
+export type ValorBiblioteca = {
   prestamos: Prestamo[];
   esperas: Esperas;
   recientes: Pila<Libro>;
@@ -35,7 +35,7 @@ type ValorBiblioteca = {
   descartarAviso: (id: string) => void;
 };
 
-const BibliotecaContext = createContext<ValorBiblioteca | null>(null);
+export const BibliotecaContext = createContext<ValorBiblioteca | null>(null);
 
 let contadorAvisos = 0;
 
@@ -44,9 +44,10 @@ function crearAviso(texto: string): Aviso {
   return { id: `aviso-${contadorAvisos}`, texto };
 }
 
-// El Context solo guarda estado: las decisiones las toman las funciones puras de lib/library.ts.
+// Crea el estado global. Lo usa una sola vez el layout raiz, que lo provee con BibliotecaContext.
+// Solo guarda estado: las decisiones las toman las funciones puras de lib/library.ts.
 // Pila y Cola nunca se mutan: cada cambio crea una instancia nueva para que React vea otra referencia.
-export function BibliotecaProvider({ children }: { children: ReactNode }) {
+export function useEstadoBiblioteca(): ValorBiblioteca {
   const [prestamos, setPrestamos] = useState<Prestamo[]>([]);
   const [esperas, setEsperas] = useState<Esperas>(() => crearEsperas(ESPERAS_INICIALES));
   const [recientes, setRecientes] = useState(() => new Pila<Libro>());
@@ -129,13 +130,13 @@ export function BibliotecaProvider({ children }: { children: ReactNode }) {
     [prestamos, esperas, recientes, sesion, avisos, reservar, devolver, agregarReciente, entregarAlSiguiente, iniciarSesion, cerrarSesion, descartarAviso],
   );
 
-  return <BibliotecaContext.Provider value={valor}>{children}</BibliotecaContext.Provider>;
+  return valor;
 }
 
 export function useBiblioteca(): ValorBiblioteca {
   const valor = useContext(BibliotecaContext);
   if (!valor) {
-    throw new Error('useBiblioteca debe usarse dentro de BibliotecaProvider');
+    throw new Error('useBiblioteca debe usarse dentro de BibliotecaContext');
   }
   return valor;
 }
