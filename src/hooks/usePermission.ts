@@ -1,5 +1,6 @@
 import { useCameraPermissions } from 'expo-camera';
-import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { AppState, Linking } from 'react-native';
 
 import { obtenerPermisoNotificaciones, pedirPermisoNotificaciones } from '../lib/notifications';
@@ -16,37 +17,37 @@ export function usePermiso(recurso: Recurso): ResultadoPermiso {
   const [respuestaCamara, pedirCamara, consultarCamara] = useCameraPermissions();
   const [respuestaNotificaciones, setRespuestaNotificaciones] = useState<RespuestaPermiso | null>(null);
 
-  useEffect(() => {
-    let activo = true;
+  // Se vuelve a consultar el permiso en dos momentos:
+  // 1. cuando la pantalla gana el foco (por ejemplo, al cerrar el modal /permisos/...);
+  // 2. cuando la app vuelve a primer plano (por ejemplo, al regresar de Ajustes).
+  useFocusEffect(
+    useCallback(() => {
+      let activo = true;
 
-    async function consultar() {
-      if (recurso === 'camara') {
-        await consultarCamara();
-        return;
+      async function consultar() {
+        if (recurso === 'camara') {
+          await consultarCamara();
+          return;
+        }
+        const respuesta = await obtenerPermisoNotificaciones();
+        if (activo) {
+          setRespuestaNotificaciones(respuesta);
+        }
       }
-      const respuesta = await obtenerPermisoNotificaciones();
-      if (activo) {
-        setRespuestaNotificaciones(respuesta);
-      }
-    }
 
-    // La camara se consulta sola al montar (useCameraPermissions); las notificaciones, aca.
-    if (recurso === 'notificaciones') {
       consultar();
-    }
+      const suscripcion = AppState.addEventListener('change', (estadoApp) => {
+        if (estadoApp === 'active') {
+          consultar();
+        }
+      });
 
-    // Al volver de Ajustes la app pasa a "active": se vuelve a consultar el permiso.
-    const suscripcion = AppState.addEventListener('change', (estadoApp) => {
-      if (estadoApp === 'active') {
-        consultar();
-      }
-    });
-
-    return () => {
-      activo = false;
-      suscripcion.remove();
-    };
-  }, [recurso, consultarCamara]);
+      return () => {
+        activo = false;
+        suscripcion.remove();
+      };
+    }, [recurso, consultarCamara]),
+  );
 
   const pedir = useCallback(async (): Promise<EstadoPermiso> => {
     if (recurso === 'camara') {
