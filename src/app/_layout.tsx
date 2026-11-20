@@ -18,6 +18,10 @@ export default function LayoutRaiz() {
         <StatusBar style="light" />
         <Stack screenOptions={opcionesHeader}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="buscar" options={{ title: 'Buscar' }} />
+          <Stack.Screen name="escanear" options={{ title: 'Escanear' }} />
+          <Stack.Screen name="reservar/[isbn]" options={{ title: 'Confirmar reserva', presentation: 'modal' }} />
+          <Stack.Screen name="permisos/[recurso]" options={{ title: 'Permiso', presentation: 'modal' }} />
           <Stack.Protected guard={!biblioteca.sesion}>
             <Stack.Screen name="login" options={{ title: 'Ingreso del personal', presentation: 'modal' }} />
           </Stack.Protected>

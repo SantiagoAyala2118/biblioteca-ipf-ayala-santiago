@@ -21,6 +21,7 @@ export default function LayoutCatalogo() {
           headerRight: () => <EnlacePersonal conSesion={sesion} />,
         }}
       />
+      <Stack.Screen name="libro/[isbn]" options={{ title: 'Libro' }} />
     </Stack>
   );
 }
