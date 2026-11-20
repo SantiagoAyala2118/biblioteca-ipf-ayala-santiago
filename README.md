@@ -120,6 +120,52 @@ Con la app compilada se usa el esquema `bibliotecaipf://`. En Expo Go se usa `ex
 | `bibliotecaipf://reserva` | Redirige a `/reservas` |
 | `bibliotecaipf://escanear` (camara bloqueada) | Escaner con aviso y el ingreso manual del ISBN |
 
+## Capturas
+
+Tomadas en un telefono Android con Expo Go. Los archivos estan en `docs/screenshots/`.
+
+### Catalogo
+
+| Cargando | Con error | Con datos | Con vistos recientemente |
+|---|---|---|---|
+| <img src="docs/screenshots/01-catalog-loading.jpg" width="200"> | <img src="docs/screenshots/02-catalog-error.jpg" width="200"> | <img src="docs/screenshots/03-catalog-data.jpg" width="200"> | <img src="docs/screenshots/04-catalog-recents.jpg" width="200"> |
+
+### Buscador
+
+| Sin texto | Con resultados (`borges`) | Sin resultados |
+|---|---|---|
+| <img src="docs/screenshots/05-search-empty.jpg" width="200"> | <img src="docs/screenshots/06-search-results.jpg" width="200"> | <img src="docs/screenshots/07-search-no-results.jpg" width="200"> |
+
+### Detalle inexistente
+
+| ISBN invalido (deep link `/libro/123`) |
+|---|
+| <img src="docs/screenshots/08-book-invalid-isbn.jpg" width="200"> |
+
+### Reservas
+
+| Con ejemplares (prestamo) | Sin ejemplares (lista de espera, posicion 3) |
+|---|---|
+| <img src="docs/screenshots/09-reservation-loan.jpg" width="200"> | <img src="docs/screenshots/10-reservation-waitlist.jpg" width="200"> |
+
+### Escaner y permiso de camara
+
+| Pantalla previa y dialogo del sistema | Bloqueado | Concedido |
+|---|---|---|
+| <img src="docs/screenshots/11-permission-camera-dialog.jpg" width="200"> | <img src="docs/screenshots/12-scanner-blocked.jpg" width="200"> | <img src="docs/screenshots/13-scanner-granted.jpg" width="200"> |
+
+### Mostrador
+
+| Antes de "Entregar al siguiente" | Despues de entregar todas las esperas |
+|---|---|
+| <img src="docs/screenshots/14-counter-before.jpg" width="200"> | <img src="docs/screenshots/15-counter-after.jpg" width="200"> |
+
+### Pantalla 404
+
+| Deep link `/cualquier-cosa` |
+|---|
+| <img src="docs/screenshots/16-not-found.jpg" width="200"> |
+
 ## Decisiones de diseno
 
 - **Pila y Cola sin mutar el estado:** cada accion crea una instancia nueva desde `aArray()` (`src/lib/library.ts`) y el Context la guarda con `setState`.
