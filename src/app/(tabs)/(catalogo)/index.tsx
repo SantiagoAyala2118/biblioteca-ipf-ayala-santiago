@@ -13,7 +13,7 @@ import { CANTIDAD_RECIENTES } from '../../../constants/app';
 import { colores, espaciado } from '../../../constants/tema';
 import { useBiblioteca } from '../../../context/LibraryContext';
 import { useLibros } from '../../../hooks/useLibros';
-import { calcularDisponibles, obtenerRecientes } from '../../../lib/library';
+import { calcularDisponibles, describirDisponibles, obtenerRecientes } from '../../../lib/library';
 import type { Libro } from '../../../types';
 
 function abrirLibro(libro: Libro) {
@@ -57,16 +57,13 @@ export default function PantallaCatalogo() {
       keyExtractor={(libro) => libro.isbn}
       ListHeaderComponent={encabezado}
       ListEmptyComponent={sinLibros}
-      renderItem={({ item }) => {
-        const disponibles = calcularDisponibles(item, prestamos);
-        return (
-          <TarjetaLibro
-            libro={item}
-            detalle={disponibles > 0 ? `${disponibles} disponibles` : 'Sin ejemplares'}
-            alPresionar={() => abrirLibro(item)}
-          />
-        );
-      }}
+      renderItem={({ item }) => (
+        <TarjetaLibro
+          libro={item}
+          detalle={describirDisponibles(calcularDisponibles(item, prestamos))}
+          alPresionar={() => abrirLibro(item)}
+        />
+      )}
     />
   );
 }

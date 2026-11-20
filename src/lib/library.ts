@@ -77,3 +77,10 @@ export function apilarReciente(pila: Pila<Libro>, libro: Libro): Pila<Libro> {
 export function obtenerRecientes(pila: Pila<Libro>, cantidad: number): Libro[] {
   return pila.aArray().slice(-cantidad).reverse();
 }
+
+export function describirDisponibles(cantidad: number): string {
+  if (cantidad === 0) {
+    return 'Sin ejemplares';
+  }
+  return cantidad === 1 ? '1 disponible' : `${cantidad} disponibles`;
+}

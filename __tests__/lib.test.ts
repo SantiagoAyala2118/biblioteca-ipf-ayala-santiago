@@ -7,6 +7,7 @@ import { formatearFecha, sumarDias } from '../src/lib/dates';
 import {
   apilarReciente,
   calcularDisponibles,
+  describirDisponibles,
   encolarPersona,
   entregarSiguiente,
   evaluarReserva,
@@ -68,6 +69,12 @@ describe('reglas de reserva', () => {
     expect(evaluarReserva(conStock, [prestamo(conStock.isbn)], undefined, 'Santiago', hoy).tipo).toBe('duplicado');
     const cola = new Cola(['Santiago']);
     expect(evaluarReserva(sinStock, [], cola, 'Santiago', hoy).tipo).toBe('duplicado');
+  });
+
+  it('describe los disponibles en singular y plural', () => {
+    expect(describirDisponibles(0)).toBe('Sin ejemplares');
+    expect(describirDisponibles(1)).toBe('1 disponible');
+    expect(describirDisponibles(3)).toBe('3 disponibles');
   });
 
   it('los prestamos del estante descuentan disponibles y los del mostrador no', () => {
