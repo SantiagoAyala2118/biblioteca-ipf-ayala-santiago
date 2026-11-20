@@ -117,9 +117,9 @@ Formato de cada spec: **Fuente** · **Reglas** · **Output esperado** · **Escen
 
 ### S18 Escaner
 - Fuente: A1 `/escanear`, A3.6, A3.9.
-- Reglas: 4 estados en pantalla; concedido -> `CameraView` con EAN-13; navega una sola vez (`useRef`) con `router.replace` al detalle; ISBN fuera del catalogo -> aviso sin repetirlo y sigue escaneando; ingreso manual siempre visible (valida 13 digitos).
+- Reglas: 4 estados en pantalla; concedido -> `CameraView` con EAN-13; navega una sola vez (`useRef`) y saca al escaner de la pila antes de abrir el detalle (`router.dismiss()` + `router.push`; decision registrada en el Log de tasks.md); ISBN fuera del catalogo -> aviso sin repetirlo y sigue escaneando; ingreso manual siempre visible (valida 13 digitos).
 - Escenarios: OK lectura -> detalle una vez; ERR desconocido -> aviso unico; ERR sin camara -> ingreso manual.
-- Evidencia: [W] ingreso manual valido/invalido/desconocido; [C] ref de bloqueo y `replace`; [D] lectura real.
+- Evidencia: [W] ingreso manual valido/invalido/desconocido; [W] una sola tab bar y "atras" vuelve al Catalogo; [C] ref de bloqueo; [D] lectura real.
 
 ### S19 Recordatorio de devolucion
 - Fuente: A3.7.
