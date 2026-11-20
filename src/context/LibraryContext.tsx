@@ -6,6 +6,12 @@ import { Pila } from '../estructuras/stack';
 import { obtenerLibroPorIsbn } from '../lib/catalog';
 import { sumarDias } from '../lib/dates';
 import {
+  cancelarRecordatorio,
+  notificarEntrega,
+  programarRecordatorio,
+  tienePermisoNotificaciones,
+} from '../lib/notifications';
+import {
   apilarReciente,
   crearEsperas,
   encolarPersona,
@@ -28,6 +34,8 @@ export type ValorBiblioteca = {
   avisos: Aviso[];
   reservar: (libro: Libro) => ResultadoReserva;
   devolver: (isbn: string) => void;
+  activarRecordatorio: (isbn: string) => Promise<void>;
+  desactivarRecordatorio: (isbn: string) => void;
   agregarReciente: (libro: Libro) => void;
   entregarAlSiguiente: (isbn: string) => string | null;
   iniciarSesion: (usuario: string, clave: string) => boolean;
@@ -72,9 +80,67 @@ export function useEstadoBiblioteca(): ValorBiblioteca {
     [prestamos, esperas],
   );
 
-  const devolver = useCallback((isbn: string) => {
-    setPrestamos((anteriores) => anteriores.filter((prestamo) => prestamo.isbn !== isbn));
+  const agregarAviso = useCallback((texto: string) => {
+    setAvisos((anteriores) => [...anteriores, crearAviso(texto)]);
   }, []);
+
+  const guardarIdentificador = useCallback((isbn: string, notificacionId: string | null) => {
+    setPrestamos((anteriores) =>
+      anteriores.map((prestamo) => (prestamo.isbn === isbn ? { ...prestamo, notificacionId } : prestamo)),
+    );
+  }, []);
+
+  // Al devolver se cancela el recordatorio pendiente: si no, llegaria un aviso de un libro ya devuelto.
+  const devolver = useCallback(
+    (isbn: string) => {
+      const identificador = prestamos.find((prestamo) => prestamo.isbn === isbn)?.notificacionId;
+      if (identificador) {
+        cancelarRecordatorio(identificador);
+      }
+      setPrestamos((anteriores) => anteriores.filter((prestamo) => prestamo.isbn !== isbn));
+    },
+    [prestamos],
+  );
+
+  const activarRecordatorio = useCallback(
+    async (isbn: string) => {
+      const titulo = obtenerLibroPorIsbn(isbn)?.titulo ?? 'tu libro';
+      try {
+        guardarIdentificador(isbn, await programarRecordatorio(titulo));
+      } catch {
+        agregarAviso(`No pudimos programar el recordatorio de "${titulo}". Revisa la fecha en esta pantalla.`);
+      }
+    },
+    [guardarIdentificador, agregarAviso],
+  );
+
+  const desactivarRecordatorio = useCallback(
+    (isbn: string) => {
+      const identificador = prestamos.find((prestamo) => prestamo.isbn === isbn)?.notificacionId;
+      if (identificador) {
+        cancelarRecordatorio(identificador);
+      }
+      guardarIdentificador(isbn, null);
+    },
+    [prestamos, guardarIdentificador],
+  );
+
+  // Decide entre notificacion y aviso dentro de la app consultando el permiso en este momento.
+  const avisarEntrega = useCallback(
+    async (titulo: string) => {
+      if (await tienePermisoNotificaciones()) {
+        try {
+          await notificarEntrega(titulo);
+          return;
+        } catch {
+          agregarAviso(`Ya podes retirar "${titulo}" en el mostrador.`);
+          return;
+        }
+      }
+      agregarAviso(`Ya podes retirar "${titulo}" en el mostrador.`);
+    },
+    [agregarAviso],
+  );
 
   const agregarReciente = useCallback((libro: Libro) => {
     setRecientes((anterior) => apilarReciente(anterior, libro));
@@ -91,11 +157,11 @@ export function useEstadoBiblioteca(): ValorBiblioteca {
         const titulo = obtenerLibroPorIsbn(isbn)?.titulo ?? 'tu libro';
         const vence = sumarDias(new Date(), DIAS_PRESTAMO);
         setPrestamos((anteriores) => [...anteriores, { isbn, vence, notificacionId: null, origen: 'mostrador' }]);
-        setAvisos((anteriores) => [...anteriores, crearAviso(`Ya podes retirar "${titulo}" en el mostrador.`)]);
+        avisarEntrega(titulo);
       }
       return entrega.persona;
     },
-    [esperas],
+    [esperas, avisarEntrega],
   );
 
   const iniciarSesion = useCallback((usuario: string, clave: string) => {
@@ -121,13 +187,30 @@ export function useEstadoBiblioteca(): ValorBiblioteca {
       avisos,
       reservar,
       devolver,
+      activarRecordatorio,
+      desactivarRecordatorio,
       agregarReciente,
       entregarAlSiguiente,
       iniciarSesion,
       cerrarSesion,
       descartarAviso,
     }),
-    [prestamos, esperas, recientes, sesion, avisos, reservar, devolver, agregarReciente, entregarAlSiguiente, iniciarSesion, cerrarSesion, descartarAviso],
+    [
+      prestamos,
+      esperas,
+      recientes,
+      sesion,
+      avisos,
+      reservar,
+      devolver,
+      activarRecordatorio,
+      desactivarRecordatorio,
+      agregarReciente,
+      entregarAlSiguiente,
+      iniciarSesion,
+      cerrarSesion,
+      descartarAviso,
+    ],
   );
 
   return valor;

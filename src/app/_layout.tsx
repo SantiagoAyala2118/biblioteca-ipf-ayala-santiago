@@ -3,6 +3,9 @@ import { StatusBar } from 'expo-status-bar';
 
 import { opcionesHeader, temaNavegacion } from '../constants/navigation';
 import { BibliotecaContext, useEstadoBiblioteca } from '../context/LibraryContext';
+import { configurarNotificaciones } from '../lib/notifications';
+
+configurarNotificaciones();
 
 // Si se entra por un deep link (por ejemplo /buscar), las tabs quedan debajo en la pila.
 export const unstable_settings = {
