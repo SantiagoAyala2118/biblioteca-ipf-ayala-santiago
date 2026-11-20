@@ -21,3 +21,8 @@ export function resolverIsbn(isbn: string): ResultadoBusquedaIsbn {
   const libro = obtenerLibroPorIsbn(isbn);
   return libro ? { estado: 'encontrado', libro } : { estado: 'inexistente' };
 }
+
+// Libros que tienen al menos una persona esperando, en el orden del catalogo.
+export function librosConEspera(tamanioEspera: (isbn: string) => number): Libro[] {
+  return LIBROS.filter((libro) => tamanioEspera(libro.isbn) > 0);
+}

@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals';
 
 import { Cola } from '../src/estructuras/queue';
 import { Pila } from '../src/estructuras/stack';
-import { esIsbnValido, resolverIsbn } from '../src/lib/catalog';
+import { esIsbnValido, librosConEspera, resolverIsbn } from '../src/lib/catalog';
 import { formatearFecha, sumarDias } from '../src/lib/dates';
 import {
   apilarReciente,
@@ -39,6 +39,13 @@ describe('catalog', () => {
     expect(resolverIsbn('abc').estado).toBe('invalido');
     expect(resolverIsbn('1234567890123').estado).toBe('inexistente');
     expect(resolverIsbn('9789507001017').estado).toBe('encontrado');
+  });
+});
+
+describe('libros con espera', () => {
+  it('devuelve solo los libros con alguien esperando', () => {
+    const libros = librosConEspera((isbn) => (isbn === '9789507001024' ? 2 : 0));
+    expect(libros.map((libro) => libro.titulo)).toEqual(['El Aleph']);
   });
 });
 
