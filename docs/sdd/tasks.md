@@ -25,13 +25,13 @@ Toda tarea suma [T] + [L] desde T03. Ruta de implementacion: inline en todas (si
 | T18 | Modal reservar | S15 | `reservar/[isbn].tsx` | [W] 4 casos + atras | hecha |
 | T19 | Mis reservas | S16 | `(tabs)/reservas.tsx` | [W] secciones y devolver | hecha |
 | T20 | usePermiso + pantalla previa | S17, S26 | `usePermission.ts`, `permissions.ts`, `permisos/[recurso].tsx` | [U] mapeo, [W] 3 URLs | hecha |
-| T21 | Escaner | S18 | `escanear.tsx`, `IsbnInput` | [W] manual, una sola tab bar | hecha ([D] pendiente) |
-| T22 | Recordatorios | S19 | `lib/notifications.ts`, interruptor | [C] pedido y cancelaciones | hecha ([D] pendiente) |
+| T21 | Escaner | S18 | `escanear.tsx`, `IsbnInput` | [W] manual, una sola tab bar | hecha ([D] bloqueado y concedido en el telefono) |
+| T22 | Recordatorios | S19 | `lib/notifications.ts`, interruptor | [C] pedido y cancelaciones | hecha ([D] notificacion recibida en el telefono) |
 | T23 | Login | S20 | `login.tsx` | [W] casos | hecha |
 | T24 | Mostrador | S21 | `mostrador.tsx` | [W] casos, aviso sin permiso | hecha |
 | T25 | Auditoria de practicas y SOLID | S22, S25, S26 | correcciones | [C] greps = 0, [L], [T], [U] | hecha |
-| T26 | README | S24 | `README.md` | [C] checklist + salidas reales | hecha (capturas pendientes) |
-| T27 | Flujo de prueba en telefono | S08-S21 [D] | `docs/sdd/device-test-flow.md` | prueba del alumno | pendiente de ejecutar |
+| T26 | README | S24 | `README.md` | [C] checklist + salidas reales | hecha (18 capturas y faltantes explicadas) |
+| T27 | Flujo de prueba en telefono | S08-S21 [D] | `docs/sdd/device-test-flow.md` | prueba del alumno | hecha (ver L9-L11) |
 
 ## Evidencia observada
 
@@ -71,4 +71,7 @@ Toda tarea suma [T] + [L] desde T03. Ruta de implementacion: inline en todas (si
 - L6 (decision): `web.output` pasa a `single` para poder verificar en web; con `server` el render del servidor impedia aplicar la proteccion de rutas.
 - L7 (decision): del escaner al detalle se usa `router.dismiss()` + `router.push()` en lugar de `router.replace()`. Evidencia: con `replace` el DOM tenia 2 tab bars (se creaba una segunda instancia de las tabs); con `dismiss` + `push` queda 1 y "atras" vuelve al Catalogo. S18 actualizada.
 - L8 (fix): `usePermiso` reconsulta al enfocar la pantalla (`useFocusEffect`) ademas de `AppState`; sin esto el escaner podia quedar con el estado viejo al cerrar el modal de permisos.
-- Pendientes: 2 ISBN reales del alumno en `libros.ts`; ejecucion de `device-test-flow.md`; capturas para la entrega.
+- L9 (fix, prueba en telefono): en Expo Go para Android, `setNotificationChannelAsync` fallaba con `NullPointerException` y cortaba el pedido de permiso de notificaciones. `crearCanalPrestamos` ahora atrapa el error y sigue; la notificacion usa el canal de respaldo de `expo-notifications` (verificado en `BaseNotificationBuilder.kt`). Evidencia: notificacion "Recordatorio de devolucion" recibida en el telefono a los 15 s (`docs/screenshots/18-notification-received.jpg`).
+- L10 (evidencia [D]): 18 capturas del telefono en `docs/screenshots/` y en la seccion "Capturas" del README. Deep links probados con codigos QR escaneados desde Expo Go (sin USB). Faltan el escaner en "cargando" (dura menos de 1 s y el telefono no graba pantalla) y el panel "preguntable" del escaner; la pantalla previa con el dialogo cubre ese estado. La vista de la camara concedida sale negra en la captura.
+- L11 (verificacion para RESPUESTAS.md): con `console.log` temporales (borrados despues) se comprobo en web que el Catalogo no se desmonta al cambiar de tab ni al abrir un detalle, y se registro el estado de navegacion de C1: tras confirmar, `[*__root[*(tabs)[(catalogo)[index, *libro/[isbn]], *reservas]]]`; un segundo toque en la tab Catalogo vuelve a `[index]`.
+- Pendientes: 2 ISBN reales del alumno en `libros.ts`; development build para ver el texto de proposito de la camara (desafio opcional).
