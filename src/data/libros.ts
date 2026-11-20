@@ -16,6 +16,9 @@ export const LIBROS: Libro[] = [
   { isbn: '9789507001130', titulo: 'El tunel', autor: 'Ernesto Sabato', anio: 1948, ejemplares: 1 },
   { isbn: '9789507001147', titulo: 'Operacion Masacre', autor: 'Rodolfo Walsh', anio: 1957, ejemplares: 1 },
   { isbn: '9789507001154', titulo: 'Historia de la computacion', autor: 'Marta Lopez', anio: 2019, ejemplares: 2 },
+  // ISBN reales de dos libros del alumno (se pueden escanear con la camara).
+  { isbn: '9788415089469', titulo: 'Robinson Crusoe', autor: 'Daniel Defoe', anio: 1719, ejemplares: 2 },
+  { isbn: '9789507544422', titulo: 'La Divina Comedia', autor: 'Dante Alighieri', anio: 1321, ejemplares: 1 },
 ];
 
 export const ESPERAS_INICIALES: Record<string, string[]> = {

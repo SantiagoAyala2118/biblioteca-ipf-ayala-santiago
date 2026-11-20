@@ -19,7 +19,7 @@ Caso en que todo sale bien:
 | Render | libros | cargando | error | Que lo provoca |
 |---|---|---|---|---|
 | 1 | `[]` | `true` | `null` | El Catalogo se monta. Despues de pintar corre el efecto y llama a `obtenerLibros()`. En pantalla se ve "Cargando el catalogo...". |
-| 2 | los 15 libros | `false` | `null` | A los 800 ms llega la respuesta. Se ejecutan `setLibros(datos)` y, en el `finally`, `setCargando(false)`. React junta las dos actualizaciones en un solo render (batching), asi que es un render y no dos. |
+| 2 | los 17 libros | `false` | `null` | A los 800 ms llega la respuesta. Se ejecutan `setLibros(datos)` y, en el `finally`, `setCargando(false)`. React junta las dos actualizaciones en un solo render (batching), asi que es un render y no dos. |
 
 Total: 2 renders. Lo comprobe con el log: el efecto corrio una sola vez con `intento 0`.
 
@@ -30,7 +30,7 @@ Caso en que `obtenerLibros()` falla y toco "Reintentar":
 | 1 | `[]` | `true` | `null` | Montaje. Corre el efecto con `intento = 0`. |
 | 2 | `[]` | `false` | mensaje amigable | La promesa se rechaza: `setError(...)` en el `catch` y `setCargando(false)` en el `finally`, juntos en un render. Se ve el mensaje y el boton "Reintentar". |
 | 3 | `[]` | `true` | `null` | Toco "Reintentar": `setError(null)`, `setCargando(true)` y `setIntento(1)` en un solo render. Como cambio `intento`, React ejecuta la limpieza del efecto anterior y vuelve a correr el efecto. |
-| 4 | los 15 libros | `false` | `null` | Llega la respuesta del segundo pedido. |
+| 4 | los 17 libros | `false` | `null` | Llega la respuesta del segundo pedido. |
 
 Total: 4 renders.
 
@@ -192,7 +192,7 @@ Formas de evitarlo:
 - Usar una libreria de selectores para leer solo una parte del estado.
 - Envolver los componentes hijos pesados para que no se repinten si sus props no cambiaron.
 
-No vale la pena en una app de este tamanio. Son pocas pantallas, las listas tienen 15 libros y el React Compiler (activado en `app.json`) ya memoriza los componentes hijos. Partir el Context haria el codigo mas dificil de seguir por una mejora que no se nota. Si algun dia la app crece, primero lo mediria con el Profiler y despues decidiria.
+No vale la pena en una app de este tamanio. Son pocas pantallas, las listas tienen 17 libros y el React Compiler (activado en `app.json`) ya memoriza los componentes hijos. Partir el Context haria el codigo mas dificil de seguir por una mejora que no se nota. Si algun dia la app crece, primero lo mediria con el Profiler y despues decidiria.
 
 ---
 

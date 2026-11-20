@@ -60,7 +60,7 @@ src/app/
 | `lib/` | `api.ts` (entregado), reglas de negocio puras (`library.ts`), catalogo, fechas, permisos, notificaciones |
 | `context/` | Estado global: prestamos, listas de espera, recientes, sesion y avisos |
 | `estructuras/` | Clases `Pila` y `Cola` con `#items`, `tamanio` y `aArray()` |
-| `data/` | `libros.ts` (15 libros y listas de espera iniciales) |
+| `data/` | `libros.ts` (17 libros, 2 con ISBN real: Robinson Crusoe y La Divina Comedia, y listas de espera iniciales) |
 | `types/` | Tipos de dominio |
 | `constants/` | `tema.ts` (paleta, espaciados, tamanios), constantes de la app y de navegacion |
 

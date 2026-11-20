@@ -10,7 +10,7 @@ Toda tarea suma [T] + [L] desde T03. Ruta de implementacion: inline en todas (si
 | T03 | Instalar modulos, lint y tests | S01, S23 | camera, notifications, vector-icons, jest-expo, eslint | [C] versiones, [L] corre | hecha |
 | T04 | Configurar app.json | S02, S27 | scheme, plugins, blockedPermissions, tema oscuro | [C] config public + introspect | hecha |
 | T05 | Tipos y API literal | S03 | `types/index.ts`, `lib/api.ts` | [C] diff con consigna, [T] | hecha |
-| T06 | Datos del catalogo | S04 | `data/libros.ts` | [U] test de datos | hecha (ISBN reales pendientes) |
+| T06 | Datos del catalogo | S04 | `data/libros.ts` | [U] test de datos | hecha |
 | T07 | Clases Pila y Cola | S05, S23, S26 | `estructuras/*` + tests | [U] >= 6 casos + contrato, [C] sin shift | hecha |
 | T08 | Tema y constantes | S06, S27 | `constants/tema.ts`, `constants/app.ts` | [T], [C] contraste | hecha |
 | T09 | Logica pura | S07, S12, S14, S15, S21 | `lib/catalog.ts`, `dates.ts`, `library.ts` + tests | [U] escenarios OK/ERR | hecha |
@@ -74,4 +74,5 @@ Toda tarea suma [T] + [L] desde T03. Ruta de implementacion: inline en todas (si
 - L9 (fix, prueba en telefono): en Expo Go para Android, `setNotificationChannelAsync` fallaba con `NullPointerException` y cortaba el pedido de permiso de notificaciones. `crearCanalPrestamos` ahora atrapa el error y sigue; la notificacion usa el canal de respaldo de `expo-notifications` (verificado en `BaseNotificationBuilder.kt`). Evidencia: notificacion "Recordatorio de devolucion" recibida en el telefono a los 15 s (`docs/screenshots/18-notification-received.jpg`).
 - L10 (evidencia [D]): 18 capturas del telefono en `docs/screenshots/` y en la seccion "Capturas" del README. Deep links probados con codigos QR escaneados desde Expo Go (sin USB). Faltan el escaner en "cargando" (dura menos de 1 s y el telefono no graba pantalla) y el panel "preguntable" del escaner; la pantalla previa con el dialogo cubre ese estado. La vista de la camara concedida sale negra en la captura.
 - L11 (verificacion para RESPUESTAS.md): con `console.log` temporales (borrados despues) se comprobo en web que el Catalogo no se desmonta al cambiar de tab ni al abrir un detalle, y se registro el estado de navegacion de C1: tras confirmar, `[*__root[*(tabs)[(catalogo)[index, *libro/[isbn]], *reservas]]]`; un segundo toque en la tab Catalogo vuelve a `[index]`.
-- Pendientes: 2 ISBN reales del alumno en `libros.ts`; development build para ver el texto de proposito de la camara (desafio opcional).
+- L12 (dato del alumno): ISBN reales agregados: Robinson Crusoe `9788415089469` y La Divina Comedia `9789507544422` (digito verificador ISBN-13 comprobado). El catalogo pasa a 17 libros.
+- Pendientes: development build para ver el texto de proposito de la camara (desafio opcional).
