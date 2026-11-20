@@ -20,12 +20,19 @@ export function configurarNotificaciones(): void {
 
 // En Android 8+ toda notificacion necesita un canal. En Android 13+ el dialogo de permiso
 // recien aparece cuando existe al menos un canal, por eso se crea antes de pedir.
+// Si crear el canal falla (pasa en algunos Android con Expo Go), se sigue igual:
+// la notificacion usa el canal de respaldo de expo-notifications y el pedido de permiso no se corta.
 export async function crearCanalPrestamos(): Promise<void> {
-  if (Platform.OS === 'android') {
+  if (Platform.OS !== 'android') {
+    return;
+  }
+  try {
     await Notifications.setNotificationChannelAsync(CANAL_PRESTAMOS, {
       name: 'Prestamos',
       importance: AndroidImportance.HIGH,
     });
+  } catch {
+    // Sin canal propio, Android muestra la notificacion en el canal de respaldo.
   }
 }
 
